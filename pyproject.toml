@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mojev"
+version = "0.1.0"
+description = "One-pass typed decisions with calibrated probabilities."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["numpy>=1.26", "torch>=2.2", "pyarrow>=14"]
+
+[project.optional-dependencies]
+transformers = ["transformers>=4.45", "pillow>=11", "torchvision>=0.17"]
+dev = ["pytest>=8", "transformers>=4.45", "pillow>=11", "torchvision>=0.17"]
+# Images arrive as <|image_pad|>path in the state and are loaded with PIL.
+vision = ["pillow>=11", "torchvision>=0.17"]
+
+[project.scripts]
+# One entry point. Every module also stays runnable as python -m mojev.<module>.
+mojev = "mojev.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mojev*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]

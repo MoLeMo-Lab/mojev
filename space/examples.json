@@ -1,0 +1,91 @@
+{
+  "source_sha256": "eae27bf03e0e44501316cafab2406b1505732ddf4b836d19fbb8deb642f55f50",
+  "examples": [
+    {
+      "name": "Refund routing",
+      "context": "The customer was charged twice for the same order and wants the duplicate payment returned.",
+      "question": "Which team should handle this request?",
+      "candidates": [
+        "Billing",
+        "Technical support",
+        "Sales"
+      ],
+      "files": [],
+      "tokens": 40,
+      "probabilities": {
+        "Billing": 0.9212515354156494,
+        "Sales": 0.037672750651836395,
+        "Technical support": 0.04107579588890076
+      }
+    },
+    {
+      "name": "Find the key",
+      "context": "The red box is empty. The blue box contains the key.",
+      "question": "Which box contains the key?",
+      "candidates": [
+        "The red box",
+        "The blue box"
+      ],
+      "files": [],
+      "tokens": 39,
+      "probabilities": {
+        "The blue box": 0.9793022274971008,
+        "The red box": 0.020697807893157005
+      }
+    },
+    {
+      "name": "中文退款请求",
+      "context": "用户说：订单被重复扣款，希望退回多付的钱。",
+      "question": "应该把请求转给哪个团队？",
+      "candidates": [
+        "账单与退款",
+        "技术支持",
+        "销售咨询"
+      ],
+      "files": [],
+      "tokens": 47,
+      "probabilities": {
+        "技术支持": 0.04668309539556503,
+        "账单与退款": 0.9347994327545166,
+        "销售咨询": 0.018517442047595978
+      }
+    },
+    {
+      "name": "Image: identify a logo",
+      "context": "Describe the uploaded graphic.",
+      "question": "What kind of image is this?",
+      "candidates": [
+        "A logo",
+        "A landscape photograph",
+        "A handwritten document"
+      ],
+      "files": [
+        "example-logo.png"
+      ],
+      "tokens": 104,
+      "probabilities": {
+        "A handwritten document": 0.023510349914431572,
+        "A landscape photograph": 0.045039691030979156,
+        "A logo": 0.9314500093460083
+      }
+    },
+    {
+      "name": "Two images: compare graphics",
+      "context": "Compare the two uploaded graphics.",
+      "question": "Are these the same graphic?",
+      "candidates": [
+        "Same graphic",
+        "Different graphics"
+      ],
+      "files": [
+        "example-logo.png",
+        "example-logo.png"
+      ],
+      "tokens": 162,
+      "probabilities": {
+        "Different graphics": 0.2668928802013397,
+        "Same graphic": 0.7331071496009827
+      }
+    }
+  ]
+}

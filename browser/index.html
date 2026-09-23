@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Try MoJev · Local inference</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#202020;background:#faf9f7}*{box-sizing:border-box}body{max-width:880px;margin:0 auto;padding:40px 24px}a{color:#ba124a}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:52px}.brand{font-size:24px;font-weight:750;text-decoration:none}h1{font-size:clamp(36px,6vw,64px);letter-spacing:-.05em;line-height:1.06;margin:14px 0}p{color:#64646d;line-height:1.6}.eyebrow{color:#ba124a;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}section{border-top:1px solid #d6d3d5;padding:24px 0}label{display:block;font-weight:600;font-size:14px;margin-bottom:8px}textarea,input,select{font:inherit;width:100%;padding:12px;border:1px solid #d6d3d5;border-radius:6px;background:white;margin-bottom:20px}textarea{resize:vertical;line-height:1.5}button{font:inherit;font-weight:600;background:#ba124a;border:0;border-radius:6px;color:white;padding:13px 20px;cursor:pointer}button:disabled{opacity:.45;cursor:default}.row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.row select{width:auto;margin:0}#status{font-size:14px;overflow-wrap:anywhere}#results{list-style:none;padding:0}.result{position:relative;padding:16px 0;border-bottom:1px solid #dedbdd}.result span{display:flex;justify-content:space-between;gap:20px}.bar{height:5px;background:#ba124a;margin-top:10px;border-radius:3px}small{color:#64646d}.error{color:#b01532!important}
+</style></head><body>
+<header><a class="brand" href="../">// MoJev</a><a href="https://github.com/MoLeMo-Lab/mojev">Source ↗</a></header>
+<div class="eyebrow">Browser inference · Text</div><h1>Your context.<br>Your candidates.</h1>
+<p>Run MoJev on this device. Download the ~574 MiB model once and keep it cached in your browser. Context and candidates are processed locally.</p>
+<section><div class="row"><button id="load">Load MoJev</button><button id="unload" hidden>Unload model</button><select id="backend" aria-label="Inference backend"><option value="wasm">CPU · WebAssembly</option><option value="webgpu">WebGPU + CPU</option></select><small id="size">4-bit layers · 8-bit embeddings · FP32 head</small></div><p id="status" role="status" aria-live="polite">Ready to download.</p></section>
+<section><form id="form"><label for="context">Context</label><textarea id="context" rows="4" required>The customer was charged twice for the same order and wants the duplicate payment returned.</textarea><label for="question">Question</label><input id="question" value="Which team should handle this request?" required><label for="candidates">Candidates · one per line</label><textarea id="candidates" rows="4" required>Billing
+Technical support
+Sales</textarea><button id="score" disabled>Score candidates</button></form></section>
+<section id="output" hidden><div class="eyebrow">Probability distribution</div><ul id="results"></ul><small id="timing"></small></section>
+<script type="module" src="./ui.mjs"></script></body></html>

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use MoJev, please cite it using this metadata."
+title: "MoJev: One-pass typed decisions with calibrated probabilities"
+type: software
+authors:
+  - family-names: Zhang
+    given-names: Di
+repository-code: "https://github.com/MoLeMo-Lab/mojev"
+url: "https://github.com/MoLeMo-Lab/mojev"
+license: MIT
+version: 0.1.0
+date-released: 2026-09-21

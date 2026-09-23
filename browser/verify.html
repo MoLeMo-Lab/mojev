@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>MoJev end-to-end verification</title>
+<h1>MoJev end-to-end verification</h1><button id="run">Run browser comparison</button><p id="status">Ready</p><pre id="report"></pre>
+<script type="module">
+const params = new URLSearchParams(location.search);
+const base = new URL(params.get('model') || '/work/browser-export/', location.href).href;
+const backend = params.get('backend') || 'wasm';
+const report = document.getElementById('report');
+const log = value => report.textContent += '\n' + (typeof value === 'string' ? value : JSON.stringify(value));
+document.getElementById('run').onclick = async () => {
+  document.getElementById('run').disabled = true;
+  try {
+    const fixture = await (await fetch(new URL('comparison.json', base))).json();
+    const worker = new Worker('./worker.mjs', {type:'module'});
+    let resolve, reject;
+    const request = data => new Promise((yes,no) => { resolve = yes; reject = no; worker.postMessage(data); });
+    worker.onerror = error => reject(Error(error.message));
+    worker.onmessage = ({data}) => {
+      if (data.type === 'status') document.getElementById('status').textContent = data.message;
+      else if (data.type === 'error') reject(Error(data.message));
+      else resolve(data);
+    };
+    await request({type:'load',base,backend});
+    const first = fixture.cases[0];
+    const cases = [...fixture.cases, {...first, candidates:[...first.candidates].reverse(), quantized:[...first.quantized].reverse()}];
+    for (const c of cases) {
+      const actual = await request({type:'score',...c});
+      const error = Math.max(...actual.probabilities.map((p,i)=>Math.abs(p-c.quantized[i])));
+      log({question:c.question,backend,error,pass:error < 0.001,probabilities:actual.probabilities,ms:actual.elapsed,tokens:actual.tokens});
+      if (error >= 0.001) throw Error('Browser probability comparison failed');
+    }
+    worker.terminate();
+    log('ALL CHECKS PASSED');
+  } catch(e) { log(e.stack || e.message); }
+};
+</script></html>

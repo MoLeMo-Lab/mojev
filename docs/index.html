@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="MoJev turns text or image evidence and a runtime-defined schema into calibrated probabilities over typed decisions.">
+  <title>MoJev — Typed decisions, calibrated probabilities</title>
+  <link rel="icon" type="image/png" href="assets/molemo-logo.png">
+  <link rel="stylesheet" href="styles.css?v=uncertainty-1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.9/dist/katex.min.css" integrity="sha384-lPx0C4zIUZLpveABMwOFcFeGZwsvKBJfhJ85FN1PYOV7xApBcFMhcAEMVKF8loOI" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.9/dist/katex.min.js" integrity="sha384-19KE2cFb3U+RUWmyhBz7aLOGDG8WrRC6hE3oY/HTZZlAAVWYTdmvLC//+TIV3zUx" crossorigin="anonymous"></script>
+  <script src="site.js?v=katex-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="wordmark" href="#top" aria-label="MoJev home"><span class="wordmark-mark" aria-hidden="true"></span>MoJev</a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="#method">Method</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#applications">Applications</a>
+        <a href="#resources">Resources</a>
+      </nav>
+      <a class="header-paper" href="https://github.com/MoLeMo-Lab/mojev/blob/master/paper/mojev-preprint.pdf">Read the preprint <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" id="top" aria-labelledby="hero-title">
+      <p class="hero-kicker">MoLeMo Lab / research project</p>
+      <h1 id="hero-title">Mo<span>Jev</span></h1>
+      <h2>Typed decisions.<br>Calibrated probabilities.</h2>
+      <p class="hero-summary">MoJev supports up to 1M tokens of context and multimodal text and image inputs. A caller-defined schema turns this evidence into a probability distribution over the permitted outcomes—in one forward pass.</p>
+      <a class="hero-principle" href="#method"><strong>One pass</strong><span>many typed decisions</span><span aria-hidden="true">↗</span></a>
+      <div class="hero-actions">
+        <a class="button button-dark" href="https://huggingface.co/spaces/di-zhang-fdu/mojev">Try MoJev <span aria-hidden="true">↗</span></a>
+        <a class="button button-dark" href="https://github.com/MoLeMo-Lab/mojev/blob/master/paper/mojev-preprint.pdf">Read the preprint <span aria-hidden="true">↗</span></a>
+        <a class="button button-light" href="https://github.com/MoLeMo-Lab/mojev">Explore the code <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="hero-credit">MoLeMo Lab <span aria-hidden="true">·</span> <a href="mailto:contact@molemo.org">contact@molemo.org</a></p>
+    </section>
+
+    <section class="opening-figure shell" aria-labelledby="opening-title">
+      <div class="figure-topline"><span class="eyebrow">Research overview</span><span>01 / The decision architecture</span></div>
+      <div class="opening-figure-grid">
+        <div class="opening-copy"><h2 id="opening-title">From an open-ended state<br>to a finite decision.</h2><p>MoJev shares the state across schema fields, isolates candidate branches with TreePacked Attention, and reads out a distribution through a typed decision head.</p><a class="text-link" href="#method">Inside the method <span aria-hidden="true">↗</span></a></div>
+        <a class="figure-image" href="assets/model-architecture.svg" aria-label="Open full-size MoJev architecture figure"><img src="assets/model-architecture.svg" alt="MoJev architecture: shared multimodal state and candidate branches feed a typed decision head." width="900" height="539"></a>
+      </div>
+      <p class="figure-caption">Architecture figure from the MoJev preprint. Open for the full-resolution vector diagram.</p>
+    </section>
+
+    <section class="metrics shell" aria-label="Key results and capabilities">
+      <article class="metric"><strong>93.23<span>%</span></strong><h2>Top-one accuracy</h2><p>12,000 evaluation decisions from test and out-of-distribution files.</p></article>
+      <article class="metric"><strong>0.79<span>%</span></strong><h2>Expected calibration error</h2><p>Accuracy and confidence measured on the same evaluation decisions.</p></article>
+      <article class="metric"><strong>4.31<span> ms</span></strong><h2>Per-decision inference</h2><p>Average per decision at batch 8, with no autoregressive output tokens.</p></article>
+      <article class="metric"><strong>1M</strong><h2>Context length</h2><p>Supports up to one million tokens of context.</p></article>
+    </section>
+
+    <section class="section method-section" id="method" aria-labelledby="method-title">
+      <div class="shell">
+        <div class="section-heading"><div><p class="eyebrow">01 / The mechanism</p><h2 id="method-title">One state.<br><span>Many possible outcomes.</span></h2></div><p>Every decision is defined at request time. MoJev scores the named candidates, normalizes their utilities within each field, and returns a probability law in the caller's schema.</p></div>
+        <div class="method-steps">
+          <article><span class="step-number">01</span><h3>Define the decision</h3><p>Supply a state, a question, and the allowed values for a Choice, Noul, or Score field.</p></article>
+          <article><span class="step-number">02</span><h3>Share the state</h3><p>TreePacked Attention lets candidate branches read the same evidence without reading one another.</p></article>
+          <article><span class="step-number">03</span><h3>Return a distribution</h3><p>The typed head converts candidate utilities into probabilities and a schema-bound result.</p></article>
+        </div>
+        <div class="method-detail"><div class="method-detail-copy"><p class="small-label">TreePacked Attention</p><h3>Parallel branches.<br>Clear boundaries.</h3><p>Questions attend to the shared state. Each candidate attends to the state, its own question, and its own tokens. This visibility pattern evaluates multiple fields in one packed backbone pass.</p><a class="text-link" href="https://github.com/MoLeMo-Lab/mojev/blob/master/paper/mojev-preprint.pdf">Read the method <span aria-hidden="true">↗</span></a></div><a class="method-image" href="assets/attention-mask.svg" aria-label="Open full-size TreePacked attention figure"><img src="assets/attention-mask.svg" alt="TreePacked state-question-candidate tree and its attention visibility mask." width="867" height="391"></a></div>
+        <div class="method-footnote"><strong>Learning the probabilities</strong><p>RLCD defines the typed decision problem. CDPO combines grouped preference learning with Brier scoring of observed outcomes; the packed predictions feed the loss in the same training pass.</p></div>
+      </div>
+    </section>
+
+    <section class="section evidence-section" id="evidence" aria-labelledby="evidence-title">
+      <div class="shell">
+        <div class="section-heading"><div><p class="eyebrow">02 / Experimental evidence</p><h2 id="evidence-title">Measure the distribution.<br><span>Then use it.</span></h2></div><p>The preprint tests decision quality, sequential search, visual evidence, and uncertainty. Select an experiment to see its figure and reported result.</p></div>
+        <div class="tabs" role="tablist" aria-label="Choose an experiment">
+          <button id="tab-visual" class="tab" role="tab" aria-selected="true" aria-controls="panel-visual" tabindex="0" data-tab="visual">Visual evidence</button>
+          <button id="tab-selective" class="tab" role="tab" aria-selected="false" aria-controls="panel-selective" tabindex="-1" data-tab="selective">Decision quality</button>
+          <button id="tab-reaction" class="tab" role="tab" aria-selected="false" aria-controls="panel-reaction" tabindex="-1" data-tab="reaction">Reaction search</button>
+          <button id="tab-uncertainty" class="tab" role="tab" aria-selected="false" aria-controls="panel-uncertainty" tabindex="-1" data-tab="uncertainty">Uncertainty modeling</button>
+        </div>
+        <div id="panel-selective" class="tab-panel" role="tabpanel" aria-labelledby="tab-selective" data-panel="selective" hidden>
+          <div class="evidence-copy"><span class="small-label">Prediction & uncertainty</span><h3>Know when a decision is reliable.</h3><p>MoJev reaches <strong>93.23% top-one accuracy</strong> and <strong>0.79% expected calibration error</strong> on 12,000 decisions. Ranking decisions by normalized predictive entropy exposes high-error cases for selective prediction.</p><div class="evidence-callout"><strong>0.9750</strong><span>Error-detection AUROC on the test subset</span></div><p class="protocol">Selective-prediction figure: retained coverage levels on a 400-example test subset and an OOD split.</p></div>
+          <a class="evidence-image" href="assets/selective-prediction.svg" aria-label="Open selective prediction figure"><img src="assets/selective-prediction.svg" alt="Accuracy at three retained coverage levels after decisions are ranked by normalized predictive entropy." width="795" height="409"></a>
+        </div>
+        <div id="panel-reaction" class="tab-panel" role="tabpanel" aria-labelledby="tab-reaction" data-panel="reaction" hidden>
+          <div class="evidence-copy"><span class="small-label">Closed-loop optimization</span><h3>Choose the next reaction to run.</h3><p>On a measured direct-arylation grid, MoJev-guided search reaches <strong>94.97% mean best yield</strong> after 38 experiments, versus <strong>90.14%</strong> for random search.</p><div class="evidence-callout"><strong>+4.83 pp</strong><span>Mean best-yield difference after 38 experiments</span></div><p class="protocol">Five paired seeds on the <a href="https://doi.org/10.1038/s41586-021-03213-y">Shields et al. direct-arylation benchmark</a>. Each run begins with eight identical experiments, then evaluates three new conditions per round. Bands show ±1 sample standard deviation.</p></div>
+          <a class="evidence-image" href="assets/reaction-optimization.svg" aria-label="Open reaction optimization figure"><img src="assets/reaction-optimization.svg" alt="Mean best measured yield for MoJev-guided and random search, with standard-deviation bands." width="788" height="340"></a>
+        </div>
+        <div id="panel-visual" class="tab-panel" role="tabpanel" aria-labelledby="tab-visual" data-panel="visual">
+          <div class="evidence-copy"><span class="small-label">Multimodal intervention</span><h3>Change the image. Keep the question.</h3><p>A tabby photograph replaces a gray control while the question and candidate set stay fixed. For the four-outcome choice, predicted <strong>P(cat) rises from 0.207 to 0.773</strong>.</p><div class="evidence-callout"><strong>+56.6 pp</strong><span>Change in predicted cat probability</span></div><p class="protocol">Two- and four-outcome distributions use the same visual intervention. Photograph: <a href="https://commons.wikimedia.org/wiki/File:Cat_November_2010-1a.jpg">Alvesgaspar / Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</p></div>
+          <a class="evidence-image" href="assets/multimodal-intervention.svg" aria-label="Open multimodal intervention figure"><img src="assets/multimodal-intervention.svg" alt="Gray control and tabby image with their predicted choice distributions." width="910" height="359"></a>
+        </div>
+        <div id="panel-uncertainty" class="tab-panel" role="tabpanel" aria-labelledby="tab-uncertainty" data-panel="uncertainty" hidden>
+          <section class="uncertainty-section" aria-labelledby="uncertainty-title">
+            <div><p class="small-label">Uncertainty modeling</p><h3 id="uncertainty-title">Measure how the evidence resolves uncertainty.</h3></div>
+            <div>
+              <p>MoJev returns a probability for every candidate. Normalized predictive entropy measures how concentrated that distribution is: 0 when one outcome has all the probability, and 1 when all outcomes are equally likely.</p>
+              <div class="uncertainty-formula">
+                <div data-math-display>H_{\mathrm{norm}}(p) = -\frac{1}{\log K}\sum_{i=1}^{K} p_i\log p_i</div>
+              </div>
+              <p>For the gray control and the cat photograph, compute entropy over the same candidate set and compare it alongside P(cat). The probability tracks support for the cat; entropy tracks uncertainty across all K outcomes.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section applications-section" id="applications" aria-labelledby="applications-title"><div class="shell">
+      <div class="section-heading"><div><p class="eyebrow">03 / Where distributions matter</p><h2 id="applications-title">From prediction<br><span>to intervention.</span></h2></div><p>A calibrated distribution is useful beyond selecting the top candidate: it supports belief updates, information acquisition, and decisions under a specified mechanism.</p></div>
+      <div class="application-grid">
+        <article class="application"><div class="application-heading"><span class="small-label">Causal inference</span><h3>Reason about a change in the world.</h3><p>Potential outcomes, interventions, and sequential evidence share a distribution-valued decision interface.</p></div><a href="assets/causal-models.svg" aria-label="Open causal graphs"><img src="assets/causal-models.svg" alt="Classical causal graphs for confounding, intervention, and sequential evidence." width="737" height="207"></a></article>
+        <article class="application"><div class="application-heading"><span class="small-label">Drone-control mechanism</span><h3>Probe which variables move risk.</h3><p>With the scene fixed, changing collision thresholds or braking parameters reveals the response of the predicted risk distribution.</p></div><a href="assets/drone-mechanism.svg" aria-label="Open drone mechanism figure"><img src="assets/drone-mechanism.svg" alt="Drone approach schematic and collision-risk dependency graph." width="863" height="503"></a></article>
+      </div>
+    </div></section>
+
+    <section class="section resources-section" id="resources" aria-labelledby="resources-title"><div class="shell">
+      <div class="section-heading"><div><p class="eyebrow">04 / Research resources</p><h2 id="resources-title">Read. Run. Inspect.</h2></div><p>The paper, implementation, trained checkpoint, and MoJev-Mix data are available from the MoLeMo Lab repositories.</p></div>
+      <div class="resource-grid">
+        <a href="https://github.com/MoLeMo-Lab/mojev/blob/master/paper/mojev-preprint.pdf"><span>01 / PREPRINT</span><strong>Read the paper</strong><small>Method, results, and appendices</small><b aria-hidden="true">↗</b></a>
+        <a href="https://github.com/MoLeMo-Lab/mojev"><span>02 / CODE</span><strong>Explore the implementation</strong><small>Runtime, examples, and evaluation</small><b aria-hidden="true">↗</b></a>
+        <a href="https://huggingface.co/MoLeMo-Lab/mojev"><span>03 / MODEL</span><strong>Open the checkpoint</strong><small>MoJev on Hugging Face</small><b aria-hidden="true">↗</b></a>
+        <a href="https://huggingface.co/datasets/MoLeMo-Lab/mojev-mix"><span>04 / DATASET</span><strong>Explore MoJev-Mix</strong><small>Training and evaluation mixture</small><b aria-hidden="true">↗</b></a>
+      </div>
+      <div class="citation"><div><p class="small-label">Citation</p><h3>Cite the preprint</h3></div><div class="citation-code"><button id="copy-citation" type="button">Copy BibTeX</button><pre><code id="bibtex">@misc{molemo2026mojev,
+  title  = {MoJev: Schema-Conditioned Causal Decision Learning with Large Language Models},
+  author = {{MoLeMo Lab}},
+  year   = {2026},
+  note   = {Preprint},
+  url    = {https://github.com/MoLeMo-Lab/mojev/blob/master/paper/mojev-preprint.pdf}
+}</code></pre><span id="copy-status" class="sr-only" role="status" aria-live="polite"></span></div></div>
+    </div></section>
+  </main>
+
+  <footer class="site-footer shell"><a class="wordmark" href="#top"><span class="wordmark-mark" aria-hidden="true"></span>MoJev</a><p>Typed decisions. Calibrated probabilities.</p><a href="mailto:contact@molemo.org">contact@molemo.org</a></footer>
+</body>
+</html>

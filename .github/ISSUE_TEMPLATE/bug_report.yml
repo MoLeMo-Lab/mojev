@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible problem in mojev.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Please remove credentials, private input, and proprietary documents."
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Include the actual and expected behaviour.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Include a command or minimal Python example, plus a schema and safe sample state.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: mojev version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Python, OS, PyTorch, transformers, accelerator, and relevant package versions.
